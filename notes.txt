@@ -1,0 +1,55 @@
+Requirements from miniprojects:
+    - Minimum of 1 app
+    - Minimum of 5 pages using templates
+    - Minimum of 1 page that utilizes a form
+    - Set up Django admin and style models for proper entry
+    - Use Bootstrap in web templates, making use of at least one modal
+    - Set up some sort of register and login system
+    - README.md instructions must include:
+        - python manage.py makemigrations
+        - python manage.py migrate
+        - python manage.py createsuperuser
+
+
+
+Pages:
+    - Main page shows options to enter Last.fm username, and potentially displays a collection of other users'
+    visualizations. Clicking to enter your Last.fm username will open a modal to enter with a prompt, text box,
+    and submit button.
+    - Next is user statistics page which will potentially display various statistics from user's Last.fm account data,
+    and also shows a button to create a visualization.
+    - Visualization options page will show a list of visualization options to choose from as well as several filter
+    options and a submit button.
+    - Visualization page will display the visualization based on the options chosen as well as options to download the
+    visualization as an image.
+    - About/Help/Privacy policy page will be linked at the bottom of each page and displays information about what the
+    app does, how data is fetched, privacy policy, and help documentation.
+
+Tables:
+    UserProfile
+    - id (auto)
+    - lastfm_username (string, unique)
+    - display_name (string)
+    - profile_url (string)
+    - avatar_url (string)
+    - total_scrobbles (integer)
+    - registered_date (date)
+    - top_artists (JSONField)
+    - top_albums (JSONField)
+    - top_tracks (JSONField)
+    - recent_tracks (JSONField)
+    - last_updated (datetime - when user data was last fetched)
+
+    Visualization
+    - id (auto)
+    - user_id (integer, foreign key)
+    - vizualization_type (string)
+    - filters (JSONField)
+    - image_file (FileField or ImageField)
+    - created_at (datetime)
+
+If user loads user statistics page and the UserProfile.last_updated is more than 1 hour ago, fetch new data from Last.fm.
+
+For registration/login, use Django's built-in login system for site accounts, which store a default last.fm username.
+Logged in users can save visualizations they generate, return to a "My Visualizations" page, delete them, or maybe even
+favorite other users' visualizations.
