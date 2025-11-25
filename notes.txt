@@ -1,5 +1,4 @@
 Requirements from miniprojects:
-    - Minimum of 1 app
     - Minimum of 5 pages using templates
     - Minimum of 1 page that utilizes a form
     - Set up Django admin and style models for proper entry
@@ -15,15 +14,34 @@ Requirements from miniprojects:
 Pages:
     - Main page shows options to enter Last.fm username, and potentially displays a collection of other users'
     visualizations. Clicking to enter your Last.fm username will open a modal to enter with a prompt, text box,
-    and submit button.
+    and submit button. User can also click to login or register.
+    ('')
+
+    - Stats loading page will display a loading animation while the user's statistics are being fetched from Last.fm.
+    ('stats/loading/<str:username>/')
+
     - Next is user statistics page which will potentially display various statistics from user's Last.fm account data,
     and also shows a button to create a visualization.
+    ('stats/<str:username>/')
+
     - Visualization options page will show a list of visualization options to choose from as well as several filter
     options and a submit button.
+    ('visualization/options/<str:username>/')
+
+    - Visualization loading page will display a loading animation while the visualization is being generated.
+    ('visualization/loading/<int:visualization_id>/')
+
     - Visualization page will display the visualization based on the options chosen as well as options to download the
     visualization as an image.
+    ('visualization/result/<int:visualization_id>/')
+
+    - User account page will display saved or generated visualizations.
+    ('account/')
+
     - About/Help/Privacy policy page will be linked at the bottom of each page and displays information about what the
     app does, how data is fetched, privacy policy, and help documentation.
+    ('about/')
+
 
 Tables:
     UserProfile

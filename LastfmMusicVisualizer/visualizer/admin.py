@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import SiteUserProfile, LastfmUserProfile, Visualization
+
+admin.site.register(SiteUserProfile)
+admin.site.register(LastfmUserProfile)
+admin.site.register(Visualization)
