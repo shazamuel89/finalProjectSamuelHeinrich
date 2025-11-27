@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 from django.contrib.auth import login
+from .forms import RegisterForm
 
 
 def index(request):
@@ -49,12 +50,12 @@ def about(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)   # automatically log them in
             return redirect('account')
     else:
-        form = UserCreationForm()
+        form = RegisterForm()
 
     return render(request, 'register.html', {'form': form})

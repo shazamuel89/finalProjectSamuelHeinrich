@@ -74,6 +74,15 @@ favorite other users' visualizations.
 
 Will need to create register view, and login and register templates.
 
-Remember to remove static js script tags from templates if not using them
+Remember to remove static js script tags from templates if not using them.
 
 Consider making a page for privacy policy and a page for help, if not, then remove from base.html footer.
+
+If user is not logged in, they can still generate visualizations and do everything else, except save those visualizations
+into their account. The visualizations will be saved in the database, but will have no owner.
+
+Add default Last.fm username functionality or remove it entirely.
+
+Add favorited visualizations functionality or remove it entirely.
+
+ADD MORE COMMENTS!!

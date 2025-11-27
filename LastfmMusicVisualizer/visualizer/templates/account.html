@@ -1,4 +1,50 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% load static %}
+
 {% block content %}
-<h1>Page placeholder</h1>
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-3xl font-bold mb-6">Your Account</h1>
+    <!-- Default Username -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Default Last.fm Username</h2>
+        {% if default_username %}
+            <p class="text-gray-700">{{ default_username }}</p>
+        {% else %}
+            <p class="text-gray-500 italic">You have not set a default username yet.</p>
+        {% endif %}
+    </div>
+    <!-- Previous Visualizations -->
+    <div class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">Previously Generated Visualizations</h2>
+        {% if previous_visualizations %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for v in previous_visualizations %}
+                    <a href="{% url 'view_visualization' v.id %}" class="block border rounded-lg p-4 hover:bg-gray-100 transition">
+                        <h3 class="font-semibold">{{ v.title|default:"Untitled Visualization" }}</h3>
+                        <p class="text-gray-600 text-sm">Generated on {{ v.created_at|date:"M d, Y H:i" }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic">No visualizations generated yet.</p>
+        {% endif %}
+    </div>
+    <!-- Favorited Visualizations -->
+    <div class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">Favorited Visualizations</h2>
+        {% if favorite_visualizations %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for v in favorite_visualizations %}
+                    <a href="{% url 'view_visualization' v.id %}" class="block border rounded-lg p-4 hover:bg-gray-100 transition">
+                        <h3 class="font-semibold">{{ v.title|default:"Untitled Visualization" }}</h3>
+                        <p class="text-gray-600 text-sm">Favorited on {{ v.favorited_at|date:"M d, Y H:i" }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic">No favorites yet.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

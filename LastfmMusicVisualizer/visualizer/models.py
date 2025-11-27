@@ -47,7 +47,7 @@ class LastfmUserProfile(models.Model):
 
 
 class Visualization(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_visualizations')
+    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='saved_visualizations')
     lastfm_user = models.ForeignKey(LastfmUserProfile, on_delete=models.CASCADE, related_name='visualizations')
 
     visualization_type = models.CharField(max_length=100)
