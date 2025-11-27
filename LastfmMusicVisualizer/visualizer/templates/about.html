@@ -1,4 +1,55 @@
 {% extends "base.html" %}
+{% block title %}About - Last.fm Visualizer{% endblock %}
 {% block content %}
-<h1>Page placeholder</h1>
+<div class="container py-5">
+    <h1 class="mb-4 text-center">About This Project</h1>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-3">What Is the Last.fm Visualizer?</h4>
+                    <p class="card-text">
+                        The Last.fm Visualizer is a tool designed to transform your Last.fm listening history
+                        into unique, striking visualizations. Whether you're curious about your top artists,
+                        long-term listening trends, or daily listening habits, this tool provides an insightful
+                        way to explore your musical identity.
+                    </p>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-3">How It Works</h4>
+                    <ul>
+                        <li>You enter your Last.fm username.</li>
+                        <li>The site requests your public scrobble data from the Last.fm API.</li>
+                        <li>You are taken to a stats page that summarizes your listening history.</li>
+                        <li>After viewing the stats, you select a visualization type and choose any filters or
+                            customization options.</li>
+                        <li>After submitting your choices, you are taken to the visualization page, where your custom
+                            visualization is generated and displayed.</li>
+                    </ul>
+                    <p class="card-text">
+                        No account on this site is required to view your stats or generate visualizations. However, if
+                        you want to save your generated visualizations for later access, you’ll need to be logged in to
+                        a site account.
+                    </p>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-3">Get Started</h4>
+                    <p class="card-text">
+                        To begin exploring your listening history, click the
+                        <strong>“Get Started”</strong> button in the top navigation bar or click the button below.
+                    </p>
+                    <button class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#usernameModal">
+                        Enter Username
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
