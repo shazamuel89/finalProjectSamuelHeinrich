@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from .forms import RegisterForm
+from .models import Visualization
 
 
 def index(request):
-    return render(request, 'index.html')
+    visualizations = Visualization.objects.order_by('-created_at')[:20]
+    return render(request, 'index.html', {'visualizations': visualizations})
 
 
 def fetch_user_stats(request):
