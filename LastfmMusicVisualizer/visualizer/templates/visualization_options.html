@@ -1,4 +1,119 @@
 {% extends "base.html" %}
+
+{% load static %}
+
 {% block content %}
-<h1>Page placeholder</h1>
+<div class="container py-5">
+    <h1 class="text-center mb-4">Create a Visualization</h1>
+    <p class="text-center text-muted">
+        Choose the type of visualization and adjust any filters you want.
+    </p>
+    <form method="post" action="{% url 'loading_visualization' visualization_id=0 %}">
+        {% csrf_token %}
+        <!-- ============================== -->
+        <!-- 1. Visualization Type Section -->
+        <!-- ============================== -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">1. Visualization Type</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="visualization_type" id="viz1" value="top_artists" checked>
+                    <label class="form-check-label" for="viz1">
+                        Top Artists Chart
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="visualization_type" id="viz2" value="top_tracks">
+                    <label class="form-check-label" for="viz2">
+                        Top Tracks Chart
+                    </label>
+                </div>
+                <!-- Add more visualization types later -->
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- 2. Time Range Filters -->
+        <!-- ============================== -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">2. Time Range</h4>
+            </div>
+            <div class="card-body">
+                <select name="time_range" class="form-select">
+                    <option value="overall" selected>Overall (All Time)</option>
+                    <option value="7day">Last 7 Days</option>
+                    <option value="1month">Last 1 Month</option>
+                    <option value="12month">Last 12 Months</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- 3. Limit / Quantity Filter -->
+        <!-- ============================== -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">3. Number of Items</h4>
+            </div>
+            <div class="card-body">
+                <select name="limit" class="form-select">
+                    <option value="10">Top 10</option>
+                    <option value="20" selected>Top 20</option>
+                    <option value="50">Top 50</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- 4. Sort Options -->
+        <!-- ============================== -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">4. Sort Options</h4>
+            </div>
+            <div class="card-body">
+                <select name="sort" class="form-select">
+                    <option value="desc" selected>Highest First</option>
+                    <option value="asc">Lowest First</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- 5. Additional Settings -->
+        <!-- ============================== -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">5. Additional Options</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="include_images" id="includeImages" checked>
+                    <label class="form-check-label" for="includeImages">
+                        Include Artist / Album Images
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="show_labels" id="showLabels" checked>
+                    <label class="form-check-label" for="showLabels">
+                        Display Text Labels on Visualization
+                    </label>
+                </div>
+                <!-- Add more options later -->
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- 6. Submit -->
+        <!-- ============================== -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                Generate Visualization
+            </button>
+        </div>
+    </form>
+</div>
 {% endblock %}

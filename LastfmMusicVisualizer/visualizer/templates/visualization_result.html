@@ -1,4 +1,92 @@
 {% extends "base.html" %}
+
+{% load static %}
+
 {% block content %}
-<h1>Page placeholder</h1>
+<div class="container py-5">
+    <!-- ============================= -->
+    <!-- HEADER -->
+    <!-- ============================= -->
+    <div class="text-center mb-4">
+        <h1 class="mb-1">Your Visualization</h1>
+        <p class="text-muted">
+            Generated from Last.fm data for <strong>{{ visualization.lastfm_user.lastfm_username }}</strong>
+        </p>
+    </div>
+
+    <!-- ============================= -->
+    <!-- VISUALIZATION IMAGE -->
+    <!-- ============================= -->
+    <div class="card shadow mb-5">
+        <div class="card-body text-center">
+            {% if visualization.image_file %}
+                <img src="{{ visualization.image_file.url }}" alt="Visualization Image"
+                     class="img-fluid rounded border" style="max-height: 600px;">
+            {% else %}
+                <p class="text-muted py-5">(No visualization image found)</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ============================= -->
+    <!-- ACTION BUTTONS -->
+    <!-- ============================= -->
+    <div class="text-center mb-5">
+        <!-- Download button -->
+        {% if visualization.image_file %}
+            <a href="{{ visualization.image_file.url }}" download
+               class="btn btn-primary btn-lg me-2 shadow">
+                Download Image
+            </a>
+        {% endif %}
+        <!-- Favorite button -->
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'favorite_visualization' visualization.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-warning btn-lg me-2 shadow">
+                    ★ Favorite
+                </button>
+            </form>
+        {% endif %}
+        <!-- Regenerate button -->
+        <a href="{% url 'visualization_options' username=visualization.lastfm_user.lastfm_username %}"
+           class="btn btn-outline-secondary btn-lg shadow">
+            Create Another
+        </a>
+    </div>
+
+    <!-- ============================= -->
+    <!-- VISUALIZATION DETAILS -->
+    <!-- ============================= -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">Visualization Details</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Type:</strong> {{ visualization.visualization_type }}</p>
+            <p><strong>Created:</strong> {{ visualization.created_at }}</p>
+            <h5 class="mt-4">Filters Used:</h5>
+            <pre class="bg-light p-3 rounded">{{ visualization.filters|json_script:"filters-json" }}</pre>
+        </div>
+    </div>
+
+    <!-- ============================= -->
+    <!-- SHARE SECTION (Optional) -->
+    <!-- ============================= -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">Share Your Visualization</h4>
+        </div>
+        <div class="card-body text-center">
+            <p class="text-muted mb-3">
+                Share this visualization with others!
+            </p>
+            <div>
+                <button class="btn btn-outline-primary me-2">Copy Link</button>
+                <button class="btn btn-outline-info me-2">Share on Twitter</button>
+                <button class="btn btn-outline-secondary">Share on Reddit</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
