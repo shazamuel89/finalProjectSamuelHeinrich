@@ -63,12 +63,6 @@ Tables:
 
 If user loads user statistics page and the UserProfile.last_updated is more than 1 hour ago, fetch new data from Last.fm.
 
-For registration/login, use Django's built-in login system for site accounts, which store a default last.fm username.
-Logged in users can save visualizations they generate, return to a "My Visualizations" page, delete them, or maybe even
-favorite other users' visualizations.
-
-Will need to create register view, and login and register templates.
-
 Remember to remove static js script tags from templates if not using them.
 
 Consider making a page for privacy policy and a page for help, if not, then remove from base.html footer.

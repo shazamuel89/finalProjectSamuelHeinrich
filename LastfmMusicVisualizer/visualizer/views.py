@@ -1,9 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from .forms import RegisterForm
-from .models import Visualization
+from .models import Visualization, LastfmUserProfile
+from .utils import is_older_than
+from . import services
+
 
 
 def index(request):
@@ -19,6 +23,7 @@ def fetch_user_stats(request):
 
     # Keep index redirect to cover any potential edge cases
     return redirect('index')
+
 
 def loading_user_stats(request, username):
     return render(request, 'loading_user_stats.html', {'username': username})

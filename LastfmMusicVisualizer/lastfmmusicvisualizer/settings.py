@@ -125,3 +125,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'account'
 LOGOUT_REDIRECT_URL = 'index'
+
+LASTFM_API_KEY = ''
+LASTFM_API_BASE = 'http://ws.audioscrobbler.com/2.0/'
