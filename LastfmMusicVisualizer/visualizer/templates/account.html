@@ -5,15 +5,45 @@
 {% block content %}
 <div class="container mx-auto px-4 py-6">
     <h1 class="text-3xl font-bold mb-6">Your Account</h1>
-    <!-- Default Username -->
-    <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-2">Default Last.fm Username</h2>
-        {% if default_username %}
-            <p class="text-gray-700">{{ default_username }}</p>
-        {% else %}
-            <p class="text-gray-500 italic">You have not set a default username yet.</p>
-        {% endif %}
-    </div>
+<!-- Default Username -->
+<div class="mb-8">
+    <h2 class="text-xl font-semibold mb-2">Default Last.fm User</h2>
+    {% if default_username and lastfm_profile %}
+        <div class="flex items-center space-x-4 p-4 border rounded-lg bg-gray-50">
+            <!-- Avatar if available -->
+            {% if lastfm_profile.avatar_url %}
+                <img src="{{ lastfm_profile.avatar_url }}"
+                     alt="{{ lastfm_profile.lastfm_username }} avatar"
+                     class="w-16 h-16 rounded-full border">
+            {% endif %}
+            <div>
+                <!-- Display Name or Username -->
+                <h3 class="text-xl font-bold">
+                    {{ lastfm_profile.display_name|default:lastfm_profile.lastfm_username }}
+                </h3>
+                <!-- Username -->
+                <p class="text-gray-600">@{{ lastfm_profile.lastfm_username }}</p>
+                <!-- Optional profile link -->
+                {% if lastfm_profile.profile_url %}
+                    <a href="{{ lastfm_profile.profile_url }}"
+                       target="_blank"
+                       class="text-blue-600 underline text-sm">
+                        View Last.fm Profile
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+
+    {% elif default_username %}
+        <!-- Username exists but no profile details -->
+        <p class="text-gray-700">{{ default_username }}</p>
+
+    {% else %}
+        <p class="text-gray-500 italic">You have not set a default username yet.</p>
+    {% endif %}
+</div>
+
     <!-- Previous Visualizations -->
     <div class="mb-10">
         <h2 class="text-2xl font-semibold mb-4">Previously Generated Visualizations</h2>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'visualizer.context_processors.default_lastfm_username',
             ],
         },
     },
@@ -126,5 +128,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'account'
 LOGOUT_REDIRECT_URL = 'index'
 
-LASTFM_API_KEY = ''
+LASTFM_API_KEY = config('LASTFM_API_KEY')
+LASTFM_SHARED_SECRET = config('LASTFM_SHARED_SECRET')
 LASTFM_API_BASE = 'http://ws.audioscrobbler.com/2.0/'

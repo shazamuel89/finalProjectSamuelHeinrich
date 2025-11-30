@@ -7,7 +7,7 @@ Pages:
     - Stats loading page will display a loading animation while the user's statistics are being fetched from Last.fm.
     ('stats/loading/<str:username>/')
 
-    - Next is user statistics page which will potentially display various statistics from user's Last.fm account data,
+    - Next is user statistics page which will potentially display various simple statistics from user's Last.fm account data,
     and also shows a button to create a visualization.
     ('stats/<str:username>/')
 
@@ -42,13 +42,7 @@ Tables:
     - display_name (CharField, max_length=100, nullable/optional)
     - profile_url (URLField, nullable/optional)
     - avatar_url (URLField, nullable/optional)
-    - total_scrobbles (IntegerField, nullable/optional)
     - registered_date (DateField, nullable/optional)
-    - top_artists (JSONField, default {})
-    - top_albums (JSONField, default {})
-    - top_tracks (JSONField, default {})
-    - recent_tracks (JSONField, default {})
-    - last_updated (DateTimeField, default timezone.now)
 
     Visualization
     - id (AutoField, primary key)
@@ -80,6 +74,36 @@ README.md instructions must include:
         - python manage.py makemigrations
         - python manage.py migrate
         - python manage.py createsuperuser
+
+
+List of Last.fm methods I might use:
+- album.getInfo
+- album.getTopTags
+- artist.getInfo
+- artist.getSimilar
+- artist.getTopAlbums
+- artist.getTopTags
+- artist.getTopTracks
+- geo.getTopArtists
+- geo.getTopTracks
+- tag.getInfo
+- tag.getSimilar
+- tag.getTopAlbums
+- tag.getTopArtists
+- tag.getTopTracks
+- track.getInfo
+- track.getSimilar
+- track.getTopTags
+- user.getInfo
+- user.getRecentTracks
+- user.getTopAlbums
+- user.getTopArtists
+- user.getTopTracks
+- user.getWeeklyAlbumChart
+- user.getWeeklyArtistChart
+- user.getWeeklyChartList
+- user.getWeeklyTrackChart
+
 
 ADD MORE COMMENTS!!
 

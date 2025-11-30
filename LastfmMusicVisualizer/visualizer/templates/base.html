@@ -96,8 +96,24 @@
                     {% csrf_token %}
                     <div class="modal-body">
                         <label for="id_username" class="form-label">Last.fm Username</label>
-                        <input type="text" name="username" class="form-control" id="id_username"
-                               placeholder="e.g. your-lastfm-username" required>
+                        <input type="text"
+                               name="username"
+                               class="form-control"
+                               id="id_username"
+                               placeholder="e.g. your-lastfm-username"
+                               {% if user.is_authenticated and default_username %}
+                                   value="{{ default_username }}"
+                               {% endif %}
+                               required>
+                        {% if user.is_authenticated %}
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" value="1"
+                                       id="set_default_lastfm" name="set_default_lastfm">
+                                <label class="form-check-label" for="set_default_lastfm">
+                                    Set as my default Last.fm username
+                                </label>
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
