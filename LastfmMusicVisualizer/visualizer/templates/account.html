@@ -1,79 +1,94 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-6">
-    <h1 class="text-3xl font-bold mb-6">Your Account</h1>
-<!-- Default Username -->
-<div class="mb-8">
-    <h2 class="text-xl font-semibold mb-2">Default Last.fm User</h2>
-    {% if default_username and lastfm_profile %}
-        <div class="flex items-center space-x-4 p-4 border rounded-lg bg-gray-50">
-            <!-- Avatar if available -->
-            {% if lastfm_profile.avatar_url %}
-                <img src="{{ lastfm_profile.avatar_url }}"
-                     alt="{{ lastfm_profile.lastfm_username }} avatar"
-                     class="w-16 h-16 rounded-full border">
-            {% endif %}
-            <div>
-                <!-- Display Name or Username -->
-                <h3 class="text-xl font-bold">
-                    {{ lastfm_profile.display_name|default:lastfm_profile.lastfm_username }}
-                </h3>
-                <!-- Username -->
-                <p class="text-gray-600">@{{ lastfm_profile.lastfm_username }}</p>
-                <!-- Optional profile link -->
-                {% if lastfm_profile.profile_url %}
-                    <a href="{{ lastfm_profile.profile_url }}"
-                       target="_blank"
-                       class="text-blue-600 underline text-sm">
-                        View Last.fm Profile
-                    </a>
+<div class="container py-5">
+    <h1 class="mb-4 fw-bold">Your Account</h1>
+
+    <!-- Default Username -->
+    <div class="mb-5">
+        <h2 class="h4 mb-3">Default Last.fm User</h2>
+        {% if default_username and lastfm_profile %}
+            <div class="d-flex align-items-center p-3 border rounded bg-light">
+                {% if lastfm_profile.avatar_url %}
+                    <img src="{{ lastfm_profile.avatar_url }}"
+                         alt="{{ lastfm_profile.lastfm_username }} avatar"
+                         class="rounded-circle border"
+                         style="width: 70px; height: 70px; object-fit: cover;">
                 {% endif %}
+                <div class="ms-3">
+                    <h3 class="h5 fw-bold mb-1">
+                        {{ lastfm_profile.display_name|default:lastfm_profile.lastfm_username }}
+                    </h3>
+                    <p class="text-muted mb-1">@{{ lastfm_profile.lastfm_username }}</p>
+                    {% if lastfm_profile.profile_url %}
+                        <a href="{{ lastfm_profile.profile_url }}" target="_blank"
+                           class="text-primary small text-decoration-none">
+                            View Last.fm Profile
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-
-        </div>
-
-    {% elif default_username %}
-        <!-- Username exists but no profile details -->
-        <p class="text-gray-700">{{ default_username }}</p>
-
-    {% else %}
-        <p class="text-gray-500 italic">You have not set a default username yet.</p>
-    {% endif %}
-</div>
-
-    <!-- Previous Visualizations -->
-    <div class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">Previously Generated Visualizations</h2>
-        {% if previous_visualizations %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for v in previous_visualizations %}
-                    <a href="{% url 'view_visualization' v.id %}" class="block border rounded-lg p-4 hover:bg-gray-100 transition">
-                        <h3 class="font-semibold">{{ v.title|default:"Untitled Visualization" }}</h3>
-                        <p class="text-gray-600 text-sm">Generated on {{ v.created_at|date:"M d, Y H:i" }}</p>
-                    </a>
-                {% endfor %}
-            </div>
+        {% elif default_username %}
+            <p class="text-muted">{{ default_username }}</p>
         {% else %}
-            <p class="text-gray-500 italic">No visualizations generated yet.</p>
+            <p class="fst-italic text-muted">You have not set a default username yet.</p>
         {% endif %}
     </div>
-    <!-- Favorited Visualizations -->
-    <div class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">Favorited Visualizations</h2>
-        {% if favorite_visualizations %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for v in favorite_visualizations %}
-                    <a href="{% url 'view_visualization' v.id %}" class="block border rounded-lg p-4 hover:bg-gray-100 transition">
-                        <h3 class="font-semibold">{{ v.title|default:"Untitled Visualization" }}</h3>
-                        <p class="text-gray-600 text-sm">Favorited on {{ v.favorited_at|date:"M d, Y H:i" }}</p>
-                    </a>
+
+    <!-- Previous Visualizations -->
+    <div class="mb-5">
+        <h2 class="h4 mb-3">Previously Generated Visualizations</h2>
+        {% if previous_visualizations %}
+            <div class="row g-4">
+                {% for v in previous_visualizations %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <a href="{% url 'view_visualization' v.id %}"
+                           class="text-decoration-none text-dark">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{ v.title|default:"Untitled Visualization" }}
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        Generated on {{ v.created_at|date:"M d, Y H:i" }}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-gray-500 italic">No favorites yet.</p>
+            <p class="fst-italic text-muted">No visualizations generated yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Favorite Visualizations -->
+    <div class="mb-5">
+        <h2 class="h4 mb-3">Favorited Visualizations</h2>
+        {% if favorite_visualizations %}
+            <div class="row g-4">
+                {% for v in favorite_visualizations %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <a href="{% url 'view_visualization' v.id %}"
+                           class="text-decoration-none text-dark">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{ v.title|default:"Untitled Visualization" }}
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        Favorited on {{ v.favorited_at|date:"M d, Y H:i" }}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="fst-italic text-muted">No favorites yet.</p>
         {% endif %}
     </div>
 </div>

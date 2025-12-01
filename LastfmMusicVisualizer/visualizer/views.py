@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from .forms import RegisterForm
 from .models import Visualization, LastfmUserProfile, SiteUserProfile
+from .adapters.lastfm import user as lastfmUser
+from datetime import datetime
 
 def index(request):
     visualizations = Visualization.objects.order_by('-created_at')[:20]
@@ -26,16 +28,49 @@ def fetch_user_stats(request):
     return redirect('index')
 
 
-
 def loading_user_stats(request, username):
-    # Render page
-    # Fetch user's profile data from db and Last.fm
-    # Upon finishing fetching, redirect to user_stats page
-    return render(request, 'loading_user_stats.html', {'username': username})
+    # Fetch info from API
+    info = lastfmUser.get_info(username)
+    user_data = info["user"]
+
+    avatar = user_data["image"][-1]["#text"] if user_data.get("image") else None  # largest img
+    registered_ts = user_data["registered"].get("unixtime")
+
+    # Save/Update profile
+    LastfmUserProfile.objects.update_or_create(
+        lastfm_username=username,
+        defaults={
+            "display_name": user_data.get("name"),
+            "profile_url": user_data.get("url"),
+            "avatar_url": avatar,
+            "registered_date": datetime.fromtimestamp(int(registered_ts)) if registered_ts else None,
+        }
+    )
+
+    return redirect("user_stats", username=username)
 
 
 def user_stats(request, username):
-    return render(request, 'user_stats.html', {'username': username})
+    # Get profile from DB
+    profile = get_object_or_404(LastfmUserProfile, lastfm_username=username)
+
+    # Fetch data from Last.fm
+    info = lastfmUser.get_info(username)
+    artists = lastfmUser.get_top_artists(username, limit=5)
+    albums = lastfmUser.get_top_albums(username, limit=5)
+    tracks = lastfmUser.get_top_tracks(username, limit=10)
+    recent = lastfmUser.get_recent_tracks(username, limit=10)
+
+    context = {
+        "profile": profile,
+        "total_scrobbles": info["user"]["playcount"],
+        "recent_tracks": recent["recenttracks"]["track"],
+        "top_artists": artists["topartists"]["artist"],
+        "top_albums": albums["topalbums"]["album"],
+        "top_tracks": tracks["toptracks"]["track"],
+    }
+
+    return render(request, "user_stats.html", context)
 
 
 def visualization_options(request, username):
@@ -75,18 +110,22 @@ def account(request):
     return render(request, 'account.html', context)
 
 
-def about(request):
-    return render(request, 'about.html')
-
-
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)   # automatically log them in
+            new_user = form.save()
+
+            # CREATE the SiteUserProfile for this user
+            SiteUserProfile.objects.create(user=new_user)
+
+            login(request, new_user)
             return redirect('account')
     else:
         form = RegisterForm()
 
     return render(request, 'register.html', {'form': form})
+
+
+def about(request):
+    return render(request, 'about.html')

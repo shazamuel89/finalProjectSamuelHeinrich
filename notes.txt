@@ -55,59 +55,23 @@ Tables:
     - created_at (DateTimeField, auto_now_add=True)
 
 
-If user loads user statistics page and the UserProfile.last_updated is more than 1 hour ago, fetch new data from Last.fm.
-
-Remember to remove static js script tags from templates if not using them.
-
-Consider making a page for privacy policy and a page for help, if not, then remove from base.html footer.
-
 If user is not logged in, they can still generate visualizations and do everything else, except save those visualizations
 into their account. The visualizations will be saved in the database, but will have no owner.
-
-Add default Last.fm username functionality or remove it entirely.
 
 Add favorited visualizations functionality or remove it entirely.
 
 Set up Django admin and style models for proper entry.
+
+Remove loading templates if they don't get used.
+
+Make account page display profile image better.
 
 README.md instructions must include:
         - python manage.py makemigrations
         - python manage.py migrate
         - python manage.py createsuperuser
 
-
-List of Last.fm methods I might use:
-- album.getInfo
-- album.getTopTags
-- artist.getInfo
-- artist.getSimilar
-- artist.getTopAlbums
-- artist.getTopTags
-- artist.getTopTracks
-- geo.getTopArtists
-- geo.getTopTracks
-- tag.getInfo
-- tag.getSimilar
-- tag.getTopAlbums
-- tag.getTopArtists
-- tag.getTopTracks
-- track.getInfo
-- track.getSimilar
-- track.getTopTags
-- user.getInfo
-- user.getRecentTracks
-- user.getTopAlbums
-- user.getTopArtists
-- user.getTopTracks
-- user.getWeeklyAlbumChart
-- user.getWeeklyArtistChart
-- user.getWeeklyChartList
-- user.getWeeklyTrackChart
-
-
 ADD MORE COMMENTS!!
-
-
 
 
 Ideas for loading screens:

@@ -1,67 +1,71 @@
 {% extends "base.html" %}
+{% load lastfm_filters %}
 
-{% block title %}{{ username }}'s Stats{% endblock %}
+
+{% block title %}{{ profile.display_name|default:profile.lastfm_username }}'s Stats{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-    <!-- PAGE HEADER -->
+    <!-- HEADER -->
     <div class="text-center mb-5">
-        <h1 class="fw-bold">{{ username }}'s Last.fm Statistics</h1>
-        <p class="text-muted">Overview of your listening activity</p>
+        <h1 class="fw-bold">
+            {{ profile.display_name|default:profile.lastfm_username }}
+        </h1>
+        <p class="text-muted">Last.fm Listening Summary</p>
         <hr>
     </div>
 
+    <!-- Create Visualization Button -->
+    <div class="text-center mb-4">
+        <a href="{% url 'visualization_options' profile.lastfm_username %}" class="btn btn-primary btn-lg">
+            Create Visualization
+        </a>
+    </div>
+
     <!-- ========================= -->
-    <!-- 1. USER PROFILE SUMMARY -->
+    <!-- USER PROFILE INFO -->
     <!-- ========================= -->
     <section class="mb-5">
-        <h2 class="mb-3">Profile Overview</h2>
-        <div class="card shadow-sm p-3">
-            <div class="row align-items-center">
-                <!-- Avatar -->
-                <div class="col-md-2 text-center">
-                    {% if user_profile.image %}
-                        <img src="{{ user_profile.image }}" alt="Avatar" class="img-fluid rounded-circle mb-3" style="max-width:120px;">
-                    {% else %}
-                        <div class="bg-secondary rounded-circle d-inline-block" style="width:120px; height:120px;"></div>
-                    {% endif %}
-                </div>
-                <!-- Basic Stats -->
-                <div class="col-md-10">
-                    <ul class="list-unstyled mb-0">
-                        <li><strong>Total Scrobbles:</strong> {{ user_profile.total_scrobbles }}</li>
-                        <li><strong>Unique Artists:</strong> {{ user_profile.unique_artists }}</li>
-                        <li><strong>Unique Albums:</strong> {{ user_profile.unique_albums }}</li>
-                        <li><strong>Unique Tracks:</strong> {{ user_profile.unique_tracks }}</li>
-                        <li><strong>Account Created:</strong> {{ user_profile.registered | date }}</li>
-                    </ul>
-                </div>
+        <div class="card shadow-sm p-4 d-flex flex-row align-items-center">
+            <div class="me-4">
+                {% if profile.avatar_url %}
+                    <img src="{{ profile.avatar_url }}" class="rounded-circle" style="width:120px; height:120px;"
+                         alt="{{ profile.display_name|default:profile.lastfm_username }} avatar">
+                {% else %}
+                    <div class="bg-secondary rounded-circle" style="width:120px; height:120px;"></div>
+                {% endif %}
+            </div>
+            <div>
+                <p class="mb-1"><strong>Username:</strong> {{ profile.lastfm_username }}</p>
+                <p class="mb-1"><strong>Profile:</strong> <a href="{{ profile.profile_url }}" target="_blank">{{ profile.profile_url }}</a></p>
+                <p class="mb-1"><strong>Registered:</strong> {{ profile.registered_date }}</p>
+                <p class="mb-1"><strong>Total Scrobbles:</strong> {{ total_scrobbles }}</p>
             </div>
         </div>
     </section>
 
     <!-- ========================= -->
-    <!-- 2. RECENTLY PLAYED TRACKS -->
+    <!-- LAST 10 TRACKS -->
     <!-- ========================= -->
     <section class="mb-5">
-        <h2 class="mb-3">Recently Played Tracks</h2>
+        <h2 class="mb-3">Recently Played (Last 10)</h2>
         <div class="card shadow-sm p-3">
             {% if recent_tracks %}
                 <ul class="list-group list-group-flush">
                     {% for track in recent_tracks %}
                     <li class="list-group-item d-flex align-items-center">
-                        <!-- Album Art -->
-                        {% if track.image %}
-                            <img src="{{ track.image }}" class="rounded me-3" style="width:50px; height:50px;" alt="">
-                        {% else %}
-                            <div class="bg-secondary rounded me-3" style="width:50px; height:50px;"></div>
-                        {% endif %}
+                        <!-- Album cover -->
+                        <img src="{{ track.image.2|text }}"
+                             alt="Album Art"
+                             class="rounded me-3"
+                             style="width:60px; height:60px; object-fit: cover;">
                         <div>
-                            <strong>{{ track.name }}</strong>
-                            <br>
-                            <small class="text-muted">{{ track.artist }}</small>
+                            <strong>{{ track.name }}</strong><br>
+                            <small class="text-muted">
+                                {{ track.artist|text }}
+                                {% if track.album %} - {{ track.album|text }}{% endif %}
+                            </small>
                         </div>
-                        <span class="ms-auto text-muted small">{{ track.timestamp }}</span>
                     </li>
                     {% endfor %}
                 </ul>
@@ -72,88 +76,53 @@
     </section>
 
     <!-- ========================= -->
-    <!-- 3. TOP ARTISTS -->
+    <!-- TOP ARTISTS -->
     <!-- ========================= -->
     <section class="mb-5">
-        <h2 class="mb-3">Top Artists</h2>
-        <div class="row g-4">
-            {% for artist in top_artists %}
-            <div class="col-md-3 col-sm-6">
-                <div class="card h-100 shadow-sm">
-                    {% if artist.image %}
-                        <img src="{{ artist.image }}" class="card-img-top" alt="">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ artist.name }}</h5>
-                        <p class="text-muted mb-1">Scrobbles: {{ artist.playcount }}</p>
-                        <p class="small text-muted">Rank: {{ forloop.counter }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- ========================= -->
-    <!-- 4. TOP ALBUMS -->
-    <!-- ========================= -->
-    <section class="mb-5">
-        <h2 class="mb-3">Top Albums</h2>
-        <div class="row g-4">
-            {% for album in top_albums %}
-            <div class="col-md-3 col-sm-6">
-                <div class="card h-100 shadow-sm">
-                    {% if album.image %}
-                        <img src="{{ album.image }}" class="card-img-top" alt="">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ album.name }}</h5>
-                        <p class="text-muted mb-1">Artist: {{ album.artist }}</p>
-                        <p class="text-muted">Scrobbles: {{ album.playcount }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- ========================= -->
-    <!-- 5. TOP TRACKS -->
-    <!-- ========================= -->
-    <section class="mb-5">
-        <h2 class="mb-3">Top Tracks</h2>
+        <h2 class="mb-3">Top Artists (Top 5)</h2>
         <div class="card shadow-sm p-3">
-            <ol class="list-group list-group-numbered list-group-flush">
+            <ul>
+                {% for artist in top_artists %}
+                <li>
+                    <strong>{{ artist.name }}</strong>
+                    - {{ artist.playcount }} plays
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <!-- ========================= -->
+    <!-- TOP ALBUMS -->
+    <!-- ========================= -->
+    <section class="mb-5">
+        <h2 class="mb-3">Top Albums (Top 5)</h2>
+        <div class="card shadow-sm p-3">
+            <ul>
+                {% for album in top_albums %}
+                <li>
+                    <strong>{{ album.name }}</strong> by {{ album.artist.name }}
+                    - {{ album.playcount }} plays
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <!-- ========================= -->
+    <!-- TOP TRACKS -->
+    <!-- ========================= -->
+    <section class="mb-5">
+        <h2 class="mb-3">Top Tracks (Top 10)</h2>
+        <div class="card shadow-sm p-3">
+            <ol>
                 {% for track in top_tracks %}
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="fw-bold">{{ track.name }}</div>
-                        <small class="text-muted">{{ track.artist }}</small>
-                    </div>
-                    <span class="badge bg-primary rounded-pill">{{ track.playcount }}</span>
+                <li>
+                    {{ track.name }} - {{ track.artist.name }} ({{ track.playcount }} plays)
                 </li>
                 {% endfor %}
             </ol>
         </div>
-    </section>
-
-    <!-- ========================= -->
-    <!-- 6. LISTENING PATTERNS (Optional placeholder) -->
-    <!-- ========================= -->
-    <section class="mb-5">
-        <h2 class="mb-3">Listening Activity</h2>
-        <div class="card shadow-sm p-3">
-            <p class="text-muted">This section can later show charts like scrobbles by hour, day, or month.</p>
-        </div>
-    </section>
-
-    <!-- ========================= -->
-    <!-- 7. CREATE VISUALIZATION BUTTON -->
-    <!-- ========================= -->
-    <section class="text-center mt-5">
-        <a href="{% url 'visualization_options' username=username %}" class="btn btn-primary btn-lg shadow">
-            Create Visualization
-        </a>
     </section>
 </div>
 {% endblock %}
