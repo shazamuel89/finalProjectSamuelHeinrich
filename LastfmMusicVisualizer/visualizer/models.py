@@ -35,11 +35,12 @@ class Visualization(models.Model):
 
     favorites = models.ManyToManyField(User, related_name='favorite_visualizations', blank=True)
 
-    image_file = models.FileField(upload_to='visualizations/')
+    image_file = models.ImageField(upload_to='visualizations/')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.owner.username} - {self.lastfm_user.lastfm_username} ({self.visualization_type})'
+        owner_name = self.owner.user if self.owner else "No Owner"
+        return f'{owner_name} - {self.lastfm_user.lastfm_username} ({self.visualization_type})'
 
     @admin.display(description='Preview link')
     def preview(self):

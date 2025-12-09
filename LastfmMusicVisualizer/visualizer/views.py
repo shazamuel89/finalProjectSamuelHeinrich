@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
 from django.contrib.auth import login
 from .forms import RegisterForm
 from .models import Visualization, LastfmUserProfile, SiteUserProfile
 from .adapters.lastfm import user as lastfmUser
 from datetime import datetime
+from .services.stackplot import create_dummy_streamgraph
+from .services.store_image import save_matplotlib_figure
 
 def index(request):
     visualizations = Visualization.objects.order_by('-created_at')[:20]
@@ -77,6 +78,21 @@ def visualization_options(request, username):
     # On POST, send visualization options data to backend which creates an empty viz entry in the db and returns the id
     # Then render loading page with the id
     return render(request, 'visualization_options.html', {'username': username})
+
+def demo_visualization(request):
+    # Make the dummy streamgraph
+    fig = create_dummy_streamgraph()
+    # Get a temporary hardcoded Lastfm_User_Profile object to use for required fields
+    lastfmProfile = LastfmUserProfile.objects.get(lastfm_username='shazamuel89')
+    # Create the empty db entry
+    viz = Visualization.objects.create(
+        lastfm_user=lastfmProfile,
+        visualization_type='demo_streamgraph'
+    )
+    # Save the figure to the db
+    save_matplotlib_figure(fig, viz)
+    # Render the result page with the dummy visualization
+    return render(request, "visualization_result.html", {"visualization": viz})
 
 
 def loading_visualization(request, visualization_id):

@@ -64,14 +64,20 @@ Set up Django admin and style models for proper entry.
 
 Remove loading templates if they don't get used.
 
-Make account page display profile image better.
-
 README.md instructions must include:
         - python manage.py makemigrations
         - python manage.py migrate
         - python manage.py createsuperuser
 
 ADD MORE COMMENTS!!
+
+
+
+
+
+
+
+
 
 
 Ideas for loading screens:

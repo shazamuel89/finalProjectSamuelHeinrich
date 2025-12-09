@@ -39,9 +39,9 @@
                 Download Image
             </a>
         {% endif %}
-        <!-- Favorite button -->
+        <!-- Favorite button (disabled for now) -->
         {% if user.is_authenticated %}
-            <form method="post" action="{% url 'favorite_visualization' visualization.id %}" style="display:inline;">
+            <form method="post" {# action="{% url 'favorite_visualization' visualization.id %}" #} style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-outline-warning btn-lg me-2 shadow">
                     ★ Favorite

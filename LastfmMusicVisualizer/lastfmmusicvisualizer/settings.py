@@ -133,3 +133,7 @@ LOGOUT_REDIRECT_URL = 'index'
 LASTFM_API_KEY = config('LASTFM_API_KEY')
 LASTFM_SHARED_SECRET = config('LASTFM_SHARED_SECRET')
 LASTFM_API_BASE = 'http://ws.audioscrobbler.com/2.0/'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
