@@ -14,6 +14,20 @@ Pages:
     - Visualization options page will show a list of visualization options to choose from as well as several filter
     options and a submit button.
     ('visualization/options/<str:username>/')
+    Options will be:
+        - Streamgraph by artist
+        - Streamgraph by album
+        - Streamgraph by track
+        - Streamgraph by genre
+        Filters will be:
+        - Time period (last 7 days, last 30 days, last 6 months, all time)
+        - Top # of items in the graph
+        OPTIONAL TO IMPLEMENT:
+        - Amount of smoothing (sd)
+        - Normalization options (Percentage produces cleaner streamgraphs)
+        - Sorting order of items (descending, ascending, random looks best)
+        - Color theme
+        -
 
     - Visualization loading page will display a loading animation while the visualization is being generated.
     ('visualization/loading/<int:visualization_id>/')

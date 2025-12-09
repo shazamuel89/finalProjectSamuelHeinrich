@@ -5,14 +5,16 @@ from .forms import RegisterForm
 from .models import Visualization, LastfmUserProfile, SiteUserProfile
 from .adapters.lastfm import user as lastfmUser
 from datetime import datetime
-from .services.stackplot import create_dummy_streamgraph
+from .services.stackplot import create_data_fed_streamgraph
 from .services.store_image import save_matplotlib_figure
+from .services.get_visualization_data import get_lastfm_demo_data
 
 def index(request):
     visualizations = Visualization.objects.order_by('-created_at')[:20]
     return render(request, 'index.html', {'visualizations': visualizations})
 
 
+# This route is used when a user enters their lastfm username in the modal form
 def fetch_user_stats(request):
     if request.method == "POST":
         username = request.POST.get('username', '').strip()
@@ -30,14 +32,14 @@ def fetch_user_stats(request):
 
 
 def loading_user_stats(request, username):
-    # Fetch info from API
+    # Fetch info from Lastfm API
     info = lastfmUser.get_info(username)
     user_data = info["user"]
 
     avatar = user_data["image"][-1]["#text"] if user_data.get("image") else None  # largest img
     registered_ts = user_data["registered"].get("unixtime")
 
-    # Save/Update profile
+    # Save/Update lasffm user entry in db
     LastfmUserProfile.objects.update_or_create(
         lastfm_username=username,
         defaults={
@@ -62,6 +64,7 @@ def user_stats(request, username):
     tracks = lastfmUser.get_top_tracks(username, limit=10)
     recent = lastfmUser.get_recent_tracks(username, limit=10)
 
+    # Create context for template rendering
     context = {
         "profile": profile,
         "total_scrobbles": info["user"]["playcount"],
@@ -79,11 +82,20 @@ def visualization_options(request, username):
     # Then render loading page with the id
     return render(request, 'visualization_options.html', {'username': username})
 
+
 def demo_visualization(request):
-    # Make the dummy streamgraph
-    fig = create_dummy_streamgraph()
     # Get a temporary hardcoded Lastfm_User_Profile object to use for required fields
+    # Future: Pull Lastfm username from the request object
     lastfmProfile = LastfmUserProfile.objects.get(lastfm_username='shazamuel89')
+
+    # Future: Extract filters/options from the request object
+    # Future: Apply filters/options to Lastfm API calls
+
+    # Fetch data from the Lastfm API based on options and filters (hard-coded for now)
+    data = get_lastfm_demo_data()
+
+    # Make the data-fed streamgraph
+    fig = create_data_fed_streamgraph(data)
     # Create the empty db entry
     viz = Visualization.objects.create(
         lastfm_user=lastfmProfile,
