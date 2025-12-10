@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block content %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <div class="container py-5">
     <!-- ============================= -->
     <!-- HEADER -->
@@ -15,19 +16,27 @@
     </div>
 
     <!-- ============================= -->
-    <!-- VISUALIZATION IMAGE -->
+    <!-- VISUALIZATION GRAPH -->
     <!-- ============================= -->
     <div class="card shadow mb-5">
         <div class="card-body text-center">
-            {% if visualization.image_file %}
-                <img src="{{ visualization.image_file.url }}" alt="Visualization Image"
-                     class="img-fluid rounded border" style="max-height: 600px;">
-            {% else %}
-                <p class="text-muted py-5">(No visualization image found)</p>
-            {% endif %}
+            <div id="plotly-graph"
+                 class="border rounded p-2"
+                 style="height: 600px;">
+            </div>
         </div>
     </div>
+    <!-- Extra script avoids template autoescaping in JSON data -->
+    <script id="plotly-data" type="application/json">
+        {{ plotly_json|safe }}
+    </script>
+    <script>
+        // Parse the JSON data into a Plotly fig
+        const fig = JSON.parse(document.getElementById('plotly-data').textContent);
 
+        // Render the Plotly graph
+        Plotly.newPlot('plotly-graph', fig.data, fig.layout, {responsive: true});
+    </script>
     <!-- ============================= -->
     <!-- ACTION BUTTONS -->
     <!-- ============================= -->
@@ -49,10 +58,12 @@
             </form>
         {% endif %}
         <!-- Regenerate button -->
-        <a href="{% url 'visualization_options' username=visualization.lastfm_user.lastfm_username %}"
+        <!--
+        <a href="{#% url 'visualization_options' username=visualization.lastfm_user.lastfm_username %#}"
            class="btn btn-outline-secondary btn-lg shadow">
             Create Another
         </a>
+        -->
     </div>
 
     <!-- ============================= -->

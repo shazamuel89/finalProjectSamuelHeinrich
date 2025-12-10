@@ -6,7 +6,7 @@ from .models import Visualization, LastfmUserProfile, SiteUserProfile
 from .adapters.lastfm import user as lastfmUser
 from datetime import datetime
 from .services.stackplot import create_data_fed_streamgraph
-from .services.store_image import save_matplotlib_figure
+from .services.store_graph import save_plotly_figure
 from .services.get_visualization_data import get_lastfm_demo_data
 
 def index(request):
@@ -102,9 +102,16 @@ def demo_visualization(request):
         visualization_type='demo_streamgraph'
     )
     # Save the figure to the db
-    save_matplotlib_figure(fig, viz)
+    save_plotly_figure(fig, viz)
+
+    # Set the context
+    context = {
+        "plotly_json": viz.plotly_json,
+        "username": "shazamuel89",
+    }
+
     # Render the result page with the dummy visualization
-    return render(request, "visualization_result.html", {"visualization": viz})
+    return render(request, "visualization_result.html", context)
 
 
 def loading_visualization(request, visualization_id):

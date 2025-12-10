@@ -35,7 +35,11 @@ class Visualization(models.Model):
 
     favorites = models.ManyToManyField(User, related_name='favorite_visualizations', blank=True)
 
-    image_file = models.ImageField(upload_to='visualizations/')
+    # Saving an image_file to provide thumbnails
+    image_file = models.ImageField(upload_to='visualizations/', blank=True, null=True)
+
+    # Using TextField for Plotly JSON, since it's large and doesn't need internal access
+    plotly_json = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

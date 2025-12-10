@@ -60,7 +60,14 @@ def get_lastfm_demo_data():
         weekEnd = week['to']
 
         # Get the artists for the specific week
-        weekArtistsData = user.get_weekly_artist_chart(username, from_ts=weekStart, to_ts=weekEnd)
+        try:
+            # Last.fm's API can occasionally return status code 500 or an empty response
+            weekArtistsData = user.get_weekly_artist_chart(username, from_ts=weekStart, to_ts=weekEnd)
+        except Exception:
+            print(f"Last.fm failed for week {weekStart} to {weekEnd}, skipping.")
+            continue
+        if not weekArtistsData or 'artist' not in weekArtistsData['weeklyartistchart']:
+            continue
         weekArtists = weekArtistsData['weeklyartistchart']['artist']
 
         # Extract the artist's data
