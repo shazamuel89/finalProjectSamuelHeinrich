@@ -1,9 +1,45 @@
 from ..adapters.lastfm import user
 
 
+'''
+Sample output:
+{
+    streamData: {
+        'Aphex Twin': [
+        {
+            'weekIndex': 0,
+            'weekStart': '1108296000',
+            'weekEnd': '1108900800',
+            'playcount': 27,
+        },
+        {
+            'weekIndex': 1,
+            'weekStart': '1108900800',
+            'weekEnd': '1109505600',
+            'playcount': 12,
+        },
+        ...more weeks...
+    ],
+    ...more artists...
+    },
+    weeks: [
+        {
+            "#text": "",
+            "from": "1108296000",
+            "to": "1108900800"
+        },
+        {
+            "#text": "",
+            "from": "1108900800",
+            "to": "1109505600"
+        },
+    ],
+    ...more weeks...
+}
+'''
 def get_lastfm_demo_data():
     username = 'shazamuel89'
-    numberOfWeeks = 24 # Last 6 months
+    numberOfWeeks = 24
 
     # Fetch weekly chart list for timestamps of weeks
     weeklyChartListData = user.get_weekly_chart_list(username)
@@ -16,7 +52,7 @@ def get_lastfm_demo_data():
     streamData = {}
 
     # Week counter will increase for each week
-    weekCount = 1
+    weekCount = 0
 
     for week in filteredWeeklyChartList:
         # Get the week start and end timestamps
@@ -36,20 +72,18 @@ def get_lastfm_demo_data():
             if artistname not in streamData:
                 streamData[artistname] = []
 
-            '''
-            Append artist's data to stream data like this:
-            streamData = {
-                'Aphex Twin': [
-                    { 'week': 1, 'playcount': 27 },
-                    { 'week': 2, 'playcount': 12 },
-                    ...more weeks...
-                ],
-                ...more artists...
-            }
-            '''
-            streamData[artistname].append({ 'week': weekCount, 'playcount': playcount })
+            # Append artist's week's data to the artist's array
+            streamData[artistname].append({
+                'weekIndex': weekCount,
+                'weekStart': weekStart,
+                'weekEnd': weekEnd,
+                'playcount': playcount
+            })
 
         # Increment week count to next oldest week
         weekCount += 1
 
-    return streamData
+    return {
+        'streamData': streamData,
+        'weeks': filteredWeeklyChartList
+    }
