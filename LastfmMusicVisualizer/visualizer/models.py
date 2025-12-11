@@ -40,6 +40,7 @@ class Visualization(models.Model):
 
     # Using TextField for Plotly JSON, since it's large and doesn't need internal access
     plotly_json = models.TextField(blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .forms import RegisterForm
+from .forms import RegisterForm, VisualizationOptionsForm
 from .models import Visualization, LastfmUserProfile, SiteUserProfile
 from .adapters.lastfm import user as lastfmUser
 from datetime import datetime
 from .services.stackplot import create_data_fed_streamgraph
 from .services.store_graph import save_plotly_figure
-from .services.get_visualization_data import get_lastfm_demo_data
+from .services.get_visualization_data import get_lastfm_data
 
 def index(request):
     visualizations = Visualization.objects.order_by('-created_at')[:20]
@@ -69,7 +69,7 @@ def user_stats(request, username):
 
     return render(request, "user_stats.html", context)
 
-
+'''
 # Just a dummy route for testing viz generation
 def demo_visualization(request):
     # Get a temporary hardcoded Lastfm_User_Profile object to use for required fields
@@ -100,39 +100,60 @@ def demo_visualization(request):
 
     # Render the result page with the dummy visualization
     return render(request, "visualization_result.html", context)
-
+'''
 
 def visualization_options(request, username):
-    return render(request, 'visualization_options.html', {'username': username})
-
-
-# This route is used when a user clicks the button to generate a visualization from the visualization options page
-def start_visualization(request, username):
     if request.method == "POST":
-        # Retrieve lastfm profile previously saved in db
-        lastfmProfile = get_object_or_404(LastfmUserProfile, lastfm_username=username)
+        form = VisualizationOptionsForm(request.POST)
+        if form.is_valid():
+            # Get data from form
+            viz_type = form.cleaned_data["visualization_type"]
+            target = form.cleaned_data["visualization_target"]
+            time_range = form.cleaned_data["time_range"]
+            limit = int(form.cleaned_data["limit"])
 
-        # Create the empty visualization entry in the db
-        viz = Visualization.objects.create(
-            lastfm_user=lastfmProfile,
-            visualization_type='streamgraph'
-        )
+            # Retrieve lastfm profile previously saved in db
+            lastfmProfile = get_object_or_404(
+                LastfmUserProfile,
+                lastfm_username=username
+            )
 
-        # Future: Extract filters/options from the request object
-        # Future: Apply filters/options to Lastfm API calls
+            # Create the new visualization entry in the db
+            viz = Visualization.objects.create(
+                lastfm_user=lastfmProfile,
+                visualization_type=viz_type
+            )
 
-        # Fetch data from the Lastfm API based on options and filters (hard-coded for now)
-        data = get_lastfm_demo_data()
+            # Future: Extract filters/options from the request object
+            # Future: Apply filters/options to Lastfm API calls
 
-        # Make the data-fed streamgraph
-        fig = create_data_fed_streamgraph(data)
+            # Fetch data from the Lastfm API based on options and filters (hard-coded for now)
+            data = get_lastfm_data(
+                username=username,
+                target=target,
+                time_range=time_range,
+                limit=limit,
+            )
 
-        # Save the figure to the db
-        save_plotly_figure(fig, viz)
+            # Make the data-fed streamgraph
+            fig = create_data_fed_streamgraph(data)
 
-        return redirect("visualization_result", username=username, visualization_id=viz.id)
+            # Save the figure to the db
+            save_plotly_figure(fig, viz)
 
-    return redirect("visualization_options", username=username)
+            return redirect(
+                "visualization_result",
+                username=username,
+                visualization_id=viz.id,
+            )
+
+    else:
+        form = VisualizationOptionsForm()
+
+    return render(request, "visualization_options.html", {
+        "form": form,
+        "username": username,
+    })
 
 
 def visualization_result(request, username, visualization_id):
