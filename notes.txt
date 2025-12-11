@@ -86,10 +86,10 @@ README.md instructions must include:
 ADD MORE COMMENTS!!
 
 Todo:
-- Allow limiting number of entities in visualization.
 - Make type, created, and filters used appear in visualization result page.
 - Save owner if logged in when creating visualization.
 - Fix entity list on graph
+- Add favicon
 
 
 

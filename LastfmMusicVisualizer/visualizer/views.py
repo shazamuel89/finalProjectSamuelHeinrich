@@ -69,6 +69,7 @@ def user_stats(request, username):
 
     return render(request, "user_stats.html", context)
 
+
 '''
 # Just a dummy route for testing viz generation
 def demo_visualization(request):
@@ -101,6 +102,7 @@ def demo_visualization(request):
     # Render the result page with the dummy visualization
     return render(request, "visualization_result.html", context)
 '''
+
 
 def visualization_options(request, username):
     if request.method == "POST":

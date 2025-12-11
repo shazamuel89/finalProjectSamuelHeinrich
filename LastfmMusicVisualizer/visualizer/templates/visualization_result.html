@@ -58,12 +58,10 @@
             </form>
         {% endif %}
         <!-- Regenerate button -->
-        <!--
-        <a href="{#% url 'visualization_options' username=visualization.lastfm_user.lastfm_username %#}"
+        <a href="{% url 'visualization_options' username %}"
            class="btn btn-outline-secondary btn-lg shadow">
             Create Another
         </a>
-        -->
     </div>
 
     <!-- ============================= -->

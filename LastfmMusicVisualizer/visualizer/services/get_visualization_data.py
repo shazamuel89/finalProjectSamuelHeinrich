@@ -56,6 +56,9 @@ def get_lastfm_data(username, target, time_range, limit):
     # Week counter will increase at the beginning of each week's loop
     weekIndex = -1
 
+    # Get the top {limit} entities
+    top_entities = get_top_entities(username, target, time_range, limit)
+
     for week in filteredWeeklyChartList:
         # Increment at the beginning to ensure it increments even if continues happen
         weekIndex += 1
@@ -112,6 +115,10 @@ def get_lastfm_data(username, target, time_range, limit):
         # Extract the entity's data
         for entity in weekEntities:
             entityName = entity['name']
+
+            if entityName not in top_entities:
+                continue
+
             playcount = int(entity['playcount'])
 
             # Add entity if they have not been added to stream data yet
@@ -151,3 +158,27 @@ def time_range_to_weeks(time_range):
         "alltime": None,  # caller interprets None as "don't slice"
     }
     return mapping.get(time_range, None)
+
+
+def get_top_entities(username, target, time_range, limit):
+    if target == 'artist':
+        data = user.get_top_artists(username, period=time_range, limit=limit)
+        list_key = 'artist'
+        parent_key = 'topartists'
+    elif target == 'album':
+        data = user.get_top_albums(username, period=time_range, limit=limit)
+        list_key = 'album'
+        parent_key = 'topalbums'
+    elif target == 'track':
+        data = user.get_top_tracks(username, period=time_range, limit=limit)
+        list_key = 'track'
+        parent_key = 'toptracks'
+
+    items = data[parent_key][list_key]
+
+    # Normalize single-entry dict
+    if isinstance(items, dict):
+        items = [items]
+
+    # Extract names only
+    return {item['name'] for item in items}
