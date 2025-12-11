@@ -13,7 +13,7 @@
 
   <div class="mt-4">
     <!-- Manual continue button (for prototyping) -->
-    <a href="{% url 'visualization_result' visualization_id=visualization_id %}" class="btn btn-primary">View Visualization</a>
+    <a href="{% url 'visualization_result' visualization.lastfm_user.lastfm_username visualization_id=visualization_id %}" class="btn btn-primary">View Visualization</a>
   </div>
 </div>
 {% endblock %}

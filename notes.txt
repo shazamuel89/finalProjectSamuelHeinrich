@@ -62,7 +62,7 @@ Tables:
     - id (AutoField, primary key)
     - owner (ForeignKey to auth.User, nullable/optional, sets to NULL if user is deleted)
     - lastfm_user (ForeignKey to LastfmUserProfile, required, cascades on delete)
-    - vizualization_type (CharField, max_length=100)
+    - visualization_type (CharField, max_length=100)
     - filters (JSONField, default {}, nullable/optional)
     - favorites (ManyToManyField to auth.User, optional)
     - image_file (FileField, saved under visualizations/)

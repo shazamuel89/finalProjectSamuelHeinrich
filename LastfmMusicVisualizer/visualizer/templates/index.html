@@ -21,17 +21,17 @@
     <h2 class="fs-4 fw-semibold mb-3">Recent Visualizations From the Community</h2>
     {% if visualizations %}
         <div class="visualization-scroll-container d-flex overflow-auto pb-3" style="gap: 1.5rem;">
-            {% for vizualization in visualizations %}
-                <a href="{% url 'visualization_result' vizualization.id %}" class="text-decoration-none">
+            {% for visualization in visualizations %}
+                <a href="{% url 'visualization_result' visualization.lastfm_user.lastfm_username visualization.id %}" class="text-decoration-none">
                     <div class="card shadow-sm" style="min-width: 260px; max-width: 260px;">
-                        <img src="{{ vizualization.image_file.url }}" class="card-img-top" alt="Visualization Preview">
+                        <img src="{{ visualization.image_file.url }}" class="card-img-top" alt="Visualization Preview">
                         <div class="card-body">
-                            <h5 class="card-title text-dark mb-1">{{ vizualization.visualization_type }}</h5>
+                            <h5 class="card-title text-dark mb-1">{{ visualization.visualization_type }}</h5>
                             <p class="card-text text-muted small mb-1">
-                                {{ vizualization.lastfm_user.lastfm_username }}
+                                {{ visualization.lastfm_user.lastfm_username }}
                             </p>
                             <p class="text-muted small">
-                                {{ vizualization.created_at|date:"M j, Y" }}
+                                {{ visualization.created_at|date:"M j, Y" }}
                             </p>
                         </div>
                     </div>

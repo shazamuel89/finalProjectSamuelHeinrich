@@ -7,7 +7,6 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     path('fetch_user_stats/', views.fetch_user_stats, name='fetch_user_stats'),
-    #path('stats/loading/<str:username>/', views.loading_user_stats, name='loading_user_stats'),
     path('stats/<str:username>/', views.user_stats, name='user_stats'),
 
     path('visualization/demo/', views.demo_visualization, name='demo_visualization'),
