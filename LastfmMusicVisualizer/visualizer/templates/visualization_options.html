@@ -8,7 +8,7 @@
     <p class="text-center text-muted">
         Choose the type of visualization and adjust any filters you want.
     </p>
-    <form method="post" action="{% url 'loading_visualization' visualization_id=0 %}">
+    <form method="POST" action="{% url 'start_visualization' username=username %}">
         {% csrf_token %}
         <!-- ============================== -->
         <!-- 1. Visualization Type Section -->

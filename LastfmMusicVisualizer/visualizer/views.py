@@ -26,21 +26,22 @@ def fetch_user_stats(request):
             profile.save()
 
         # Redirect to loading page
-        return redirect('loading_user_stats', username=username)
+        return redirect('user_stats', username=username)
 
     return redirect('index')
 
 
-def loading_user_stats(request, username):
-    # Fetch info from Lastfm API
+def user_stats(request, username):
+    # Fetch user's info from Lastfm API
     info = lastfmUser.get_info(username)
     user_data = info["user"]
 
+    # Grab the avatar image and registration timestamp
     avatar = user_data["image"][-1]["#text"] if user_data.get("image") else None  # largest img
     registered_ts = user_data["registered"].get("unixtime")
 
     # Save/Update lasffm user entry in db
-    LastfmUserProfile.objects.update_or_create(
+    lastfmProfile, created = LastfmUserProfile.objects.update_or_create(
         lastfm_username=username,
         defaults={
             "display_name": user_data.get("name"),
@@ -50,15 +51,7 @@ def loading_user_stats(request, username):
         }
     )
 
-    return redirect("user_stats", username=username)
-
-
-def user_stats(request, username):
-    # Get profile from DB
-    profile = get_object_or_404(LastfmUserProfile, lastfm_username=username)
-
-    # Fetch data from Last.fm
-    info = lastfmUser.get_info(username)
+    # Fetch user's listening data from Last.fm
     artists = lastfmUser.get_top_artists(username, limit=5)
     albums = lastfmUser.get_top_albums(username, limit=5)
     tracks = lastfmUser.get_top_tracks(username, limit=10)
@@ -66,7 +59,7 @@ def user_stats(request, username):
 
     # Create context for template rendering
     context = {
-        "profile": profile,
+        "profile": lastfmProfile,
         "total_scrobbles": info["user"]["playcount"],
         "recent_tracks": recent["recenttracks"]["track"],
         "top_artists": artists["topartists"]["artist"],
@@ -77,12 +70,7 @@ def user_stats(request, username):
     return render(request, "user_stats.html", context)
 
 
-def visualization_options(request, username):
-    # On POST, send visualization options data to backend which creates an empty viz entry in the db and returns the id
-    # Then render loading page with the id
-    return render(request, 'visualization_options.html', {'username': username})
-
-
+# Just a dummy route for testing viz generation
 def demo_visualization(request):
     # Get a temporary hardcoded Lastfm_User_Profile object to use for required fields
     # Future: Pull Lastfm username from the request object
@@ -114,16 +102,50 @@ def demo_visualization(request):
     return render(request, "visualization_result.html", context)
 
 
-def loading_visualization(request, visualization_id):
-    # Render page
-    # Fetch needed data from lastfm
-    # Create visualization
-    # Upon finishing, redirect to visualization_result page
-    return render(request, 'loading_visualization.html', {'id': visualization_id})
+def visualization_options(request, username):
+    return render(request, 'visualization_options.html', {'username': username})
 
 
-def visualization_result(request, visualization_id):
-    return render(request, 'visualization_result.html', {'id': visualization_id})
+# This route is used when a user clicks the button to generate a visualization from the visualization options page
+def start_visualization(request, username):
+    if request.method == "POST":
+        # Retrieve lastfm profile previously saved in db
+        lastfmProfile = get_object_or_404(LastfmUserProfile, lastfm_username=username)
+
+        # Create the empty visualization entry in the db
+        viz = Visualization.objects.create(
+            lastfm_user=lastfmProfile,
+            visualization_type='streamgraph'
+        )
+
+        # Future: Extract filters/options from the request object
+        # Future: Apply filters/options to Lastfm API calls
+
+        # Fetch data from the Lastfm API based on options and filters (hard-coded for now)
+        data = get_lastfm_demo_data()
+
+        # Make the data-fed streamgraph
+        fig = create_data_fed_streamgraph(data)
+
+        # Save the figure to the db
+        save_plotly_figure(fig, viz)
+
+        return redirect("visualization_result", username=username, visualization_id=viz.id)
+
+    return redirect("visualization_options", username=username)
+
+
+def visualization_result(request, username, visualization_id):
+    # Get the visualization from the db
+    viz = get_object_or_404(Visualization, id=visualization_id)
+
+    # Extract and pass the plotly json graph and username
+    context = {
+        'plotly_json': viz.plotly_json,
+        'username': username,
+    }
+
+    return render(request, 'visualization_result.html', context)
 
 
 @login_required
