@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import RegisterForm, VisualizationOptionsForm
 from .models import Visualization, LastfmUserProfile, SiteUserProfile
-from .adapters.lastfm import user as lastfmUser
+from .adapters.lastfm import utils as lastfmUtils, user as lastfmUser
 from datetime import datetime
 from .services.stackplot import create_data_fed_streamgraph
 from .services.store_graph import save_plotly_figure
 from .services.get_visualization_data import get_lastfm_data
+from django.contrib import messages
 
 def index(request):
     visualizations = Visualization.objects.order_by('-created_at')[:20]
@@ -18,6 +19,17 @@ def index(request):
 def fetch_user_stats(request):
     if request.method == "POST":
         username = request.POST.get('username', '').strip()
+
+        # Check if username entered is empty
+        if not username:
+            messages.error(request, "Username cannot be empty.")
+            return redirect('index')
+
+        # Validate format and existence of user in Last.fm
+        is_valid, error = lastfmUtils.validate_lastfm_username(username)
+        if not is_valid:
+            messages.error(request, error)
+            return redirect('index')
 
         # Save default username if the user is authenticated and checked the box
         if request.user.is_authenticated and request.POST.get('set_default_lastfm'):
@@ -123,11 +135,16 @@ def visualization_options(request, username):
             # Create the new visualization entry in the db
             viz = Visualization.objects.create(
                 lastfm_user=lastfmProfile,
-                visualization_type=viz_type
+                visualization_type=viz_type,
+                owner=request.user if request.user.is_authenticated else None,
+                filters = {
+                    'target': target,
+                    'time_range': time_range,
+                    'limit': limit,
+                }
             )
 
-            # Future: Extract filters/options from the request object
-            # Future: Apply filters/options to Lastfm API calls
+            viz.save()
 
             # Fetch data from the Lastfm API based on options and filters (hard-coded for now)
             data = get_lastfm_data(
@@ -164,6 +181,7 @@ def visualization_result(request, username, visualization_id):
 
     # Extract and pass the plotly json graph and username
     context = {
+        'visualization': viz,
         'plotly_json': viz.plotly_json,
         'username': username,
     }

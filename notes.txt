@@ -78,19 +78,13 @@ Set up Django admin and style models for proper entry.
 
 Remove loading templates if they don't get used.
 
-README.md instructions must include:
-        - python manage.py makemigrations
-        - python manage.py migrate
-        - python manage.py createsuperuser
-
 ADD MORE COMMENTS!!
 
 Todo:
-- Make type, created, and filters used appear in visualization result page.
-- Save owner if logged in when creating visualization.
 - Fix entity list on graph
 - Add favicon
-
+- Remove non-essential packages from requirements.txt
+- Make the graph gaussian smoothed
 
 
 

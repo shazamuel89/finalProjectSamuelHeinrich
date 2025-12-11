@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.utils.html import format_html
 
 class SiteUserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -44,11 +45,15 @@ class Visualization(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        owner_name = self.owner.user if self.owner else "No Owner"
+        owner_name = self.owner.username if self.owner else "No Owner"
         return f'{owner_name} - {self.lastfm_user.lastfm_username} ({self.visualization_type})'
 
-    @admin.display(description='Preview link')
+    @admin.display(description='Preview')
     def preview(self):
         if self.image_file:
-            return self.image_file.url
+            return format_html(
+                '<img src="{}" style="{}" />',
+                self.image_file.url,
+                "max-height: 80px; border-radius: 6px;"
+            )
         return "(no image)"

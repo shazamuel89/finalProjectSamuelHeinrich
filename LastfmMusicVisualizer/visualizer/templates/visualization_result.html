@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load string_filters %}
 
 {% block content %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -72,10 +73,16 @@
             <h4 class="mb-0">Visualization Details</h4>
         </div>
         <div class="card-body">
-            <p><strong>Type:</strong> {{ visualization.visualization_type }}</p>
-            <p><strong>Created:</strong> {{ visualization.created_at }}</p>
+            <p><strong>Type: </strong>{{ visualization.visualization_type|capfirst }}</p>
+            <p><strong>Created: </strong>{{ visualization.created_at }}</p>
             <h5 class="mt-4">Filters Used:</h5>
-            <pre class="bg-light p-3 rounded">{{ visualization.filters|json_script:"filters-json" }}</pre>
+            <ul>
+                {%  for key, value in visualization.filters.items %}
+                    <li>
+                        <strong>{{ key|underscore_to_space|capfirst }}: </strong>{{ value }}
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 

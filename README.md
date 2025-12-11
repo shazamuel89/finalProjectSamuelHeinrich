@@ -2,7 +2,6 @@
 ### Samuel Heinrich
 ### Final Project
 
-
 # Last.fm Music Visualizer
 
 A web application that visualizes a user's personal music listening habits using data from their Last.fm account.
@@ -25,29 +24,60 @@ Other visualization libraries may be considered in the future as time allows.
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
-* List pip install instructions.
+* Python 3.13 or higher
+* Django 5.0 or higher
+* Bootstrap 5 (loaded via CDN)
+* OS: Works on Windows, macOS, or Linux
+* Required Pip packages (instructions for install below)
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* Clone the GitHub repository to your local machine:
+```
+git clone https://github.com/shazamuel89/miniproject4SamuelHeinrich.git
+cd finalProjectSamuelHeinrich
+```
+* Create and activate a virtual environment:
+```
+python -m venv venv
+source venv/bin/activate      # On macOS/Linux
+venv\Scripts\activate         # On Windows
+```
+* Install required packages:
+```
+pip install -r requirements.txt
+```
+* Verify that Django is installed correctly:
+```
+python -m django --version
+```
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+* Make database migrations and apply them:
 ```
-code blocks for commands
+cd LastfmMusicVisualizer
+python manage.py makemigrations
+python manage.py migrate
 ```
-
-## Help
-
-Any advise for common problems or issues.
+* Create an admin (superuser) account:
 ```
-command to run if program contains helper info
+python manage.py createsuperuser
 ```
+* Run the development server:
+```
+python manage.py runserver
+```
+* Open your browser and open the following on 2 separate tabs:
+```
+http://127.0.0.1:8000/
+```
+* On the second tab, replace the text after :8000/ with:
+```
+admin/
+```
+* Log in with the admin superuser account credentials you just created
+* On the first tab, you can now view the main website and use the app
 
 ## Authors
 
@@ -60,6 +90,9 @@ Samuel Heinrich
 
 ## Acknowledgments
 
-* [django-documentation](https://docs.djangoproject.com/en/5.2/)
-* [last.fm-api-documentation](https://www.last.fm/api)
-* [matplotlib-documentation](https://matplotlib.org/stable/)
+* [Django Documentation](https://docs.djangoproject.com/en/5.2/)
+* [Official Last.fm Api Documentation](https://www.last.fm/api)
+* [Unofficial Last.fm API Documentation](https://github.com/lastfm-docs/api-docs)
+* [Matplotlib Documentation](https://matplotlib.org/stable/)
+* [Plotly Docuentation](https://plotly.com/python/)
+* [Graph Gallery: Streamgraph with Python and Matplotlib](https://python-graph-gallery.com/streamchart-basic-matplotlib/)

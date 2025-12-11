@@ -43,12 +43,12 @@
             <div class="row g-4">
                 {% for v in previous_visualizations %}
                     <div class="col-12 col-md-6 col-lg-4">
-                        <a href="{% url 'view_visualization' v.id %}"
+                        <a href="{% url 'visualization_result' v.lastfm_user.lastfm_username v.id %}"
                            class="text-decoration-none text-dark">
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        {{ v.title|default:"Untitled Visualization" }}
+                                        {{ v.visualization_type|default:"Visualization" }}
                                     </h5>
                                     <p class="card-text text-muted small">
                                         Generated on {{ v.created_at|date:"M d, Y H:i" }}
@@ -71,12 +71,12 @@
             <div class="row g-4">
                 {% for v in favorite_visualizations %}
                     <div class="col-12 col-md-6 col-lg-4">
-                        <a href="{% url 'view_visualization' v.id %}"
+                        <a href="{% url 'visualization_result' v.lastfm_user.lastfm_username v.id %}"
                            class="text-decoration-none text-dark">
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        {{ v.title|default:"Untitled Visualization" }}
+                                        {{ v.visualization_type|default:"Visualization" }}
                                     </h5>
                                     <p class="card-text text-muted small">
                                         Favorited on {{ v.favorited_at|date:"M d, Y H:i" }}
