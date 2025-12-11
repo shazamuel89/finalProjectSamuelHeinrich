@@ -14,7 +14,7 @@ def validate_lastfm_username(username):
         response = lastfm_request("user.getInfo", {"user": username})
 
         # If user doesn't exist, Last.fm returns an "error" key
-        data = response.json()
+        data = response
 
     except requests.exceptions.HTTPError:
         # Last.fm returns 404 for nonexistent users
